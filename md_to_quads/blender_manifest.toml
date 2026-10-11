@@ -1,0 +1,9 @@
+schema_version = "1.0.0"
+id = "md_to_quads"
+version = "1.1.0"
+name = "MD布料转四边面"
+tagline = "MD三角面布料→完美四边面（内置Quadriflow，全版本支持）"
+maintainer = "Hermes"
+type = "add-on"
+blender_version_min = "4.2.0"
+license = ["SPDX:GPL-3.0-or-later"]
