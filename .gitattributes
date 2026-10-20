@@ -1,0 +1,11 @@
+# 批处理必须是 CRLF：LF 换行在部分 Windows 上会让 goto / 标签解析异常
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# 脚本类保持 LF，避免 shell 报错
+*.sh text eol=lf
+*.py text eol=lf
+
+# 二进制发布包不要被 Git 改动
+*.zip binary
+*.lnk binary
