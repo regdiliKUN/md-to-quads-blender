@@ -1,30 +1,55 @@
-# MD布料转四边面（Blender 一键版 / md_to_quads）
+# MD布料转四边面（md_to_quads · Blender 一键版）
 
-把 **Marvelous Designer** 导出的三角面布料，在 **Blender** 里直接变成带正确 UV 的完美四边面 —— 不用 Maya，也不用任何付费/破解的重拓扑器。
+把 **Marvelous Designer** 导出的三角面布料，在 **Blender** 里直接变成带正确 UV 的四边面 —— 不用 Maya，也不用任何付费/破解的重拓扑器。
 
 > Blender port of the Maya tool "MD布料转四边面" (原脚本作者: 离山笔记侠 / 高山小师).
 
 ## 特性
-- 🪄 **一键全自动**：导入 MD 的两个 OBJ → 自动识别平板(01)/衣服(03) → 内置 Quadriflow 重拓扑成四边面(02) → 传 UV + 传顶点位置。
-- 🔒 **无外部依赖**：重拓扑用 Blender 内置 Quadriflow（2.79+ 自带），不捆绑任何商业/破解二进制。
-- 🌐 **全版本 / 全平台**：支持 Blender **2.80 / 2.9x / 3.x / 4.x（含 4.2+）**，Windows / macOS / Linux。
-- 🧼 **安全**：纯 Blender Python，无网络、无 subprocess、无混淆。
+- 🪄 **一键全自动**：导入两个 OBJ → 自动识别①平板/③衣服 → 生成②四边面 → 传 UV → 套回衣服形状。
+- 🧩 **两种四边面方案**：默认「三角面配对」（全版本可用、保留原拓扑与 UV）；可选「Quadriflow 重拓扑」（按目标面数重新分布）。
+- 🔒 **无外部依赖**：纯 Blender Python（numpy + bmesh），无网络、无 subprocess、无二进制。
+- 🌐 **全版本 / 全平台**：Blender **2.80 / 2.9x / 3.x / 4.x（含 4.2+）**，Windows / macOS / Linux。
+- 🧭 **看得懂的界面**：三步式面板 ① 准备 → ② 生成四边面 → ③ 完成转换，带常驻状态条、空状态引导、面数/UV 自检、进度条与结果统计。
+- ↩️ **可撤销**：所有操作都支持 Ctrl+Z；删除源模型前会显式压入撤销点。
 
 ## 安装
-1. 下载本仓库的 `__init__.py`（Release 里的 `md_to_quads-1.1.0-傻瓜版.zip` 内含 `__init__.py` 与 `使用说明.txt`）。
-2. Blender → 编辑 → 偏好设置 → 插件 → **从磁盘安装 / Install from Disk** → 选 `__init__.py` → 勾选启用。
-3. 3D 视图按 `N` → 侧栏最右标签 **「MD转四边面」**。
+1. 下载 Release 里的 `md_to_quads-1.3.0.zip`（内含 `md_to_quads/__init__.py` 与 `使用说明.txt`）。
+2. Blender → 编辑 → 偏好设置 → 插件 → **从磁盘安装 / Install from Disk** → 选 zip（或解压后选 `__init__.py`）→ 勾选启用。
+3. 3D 视图按 `N` → 侧栏标签 **「MD转四边面」**。
 
 ## 使用（3 步）
 1. **Marvelous Designer**：导出「平铺板片」和「3D 衣服」两个 OBJ，**都勾选「统一UV坐标」**。
-2. 面板 **① 导入** → 「导入 MD 的 OBJ」→ 选这两个文件。
-3. 面板 **② 一键转换** → 「🪄 一键 MD→四边面（全自动）」。
+2. 面板 **① 准备**：点「导入 MD 的 OBJ」一次选中两个文件（导入完会自动填好 ①③）；
+   已在场景里就选中两个网格 → 点「从选择识别」。
+3. 面板 **③ 完成转换**：点「一键生成四边面衣服」。
 
-完成。详见仓库内 `使用说明.txt`。
+完成。若想先看看四边面效果，可先在 **② 生成四边面** 里点「生成 ② 四边面」。
+
+## 面板结构
+| 区域 | 内容 |
+| --- | --- |
+| 状态条 | 常驻显示上次结果 / 错误与统计数据（不再只有一闪而过的提示） |
+| ① 准备 | 导入 OBJ、从选择识别、①/③ 字段（显示面数与是否有 UV） |
+| ② 生成四边面 | 三角面配对（角度阈值）/ Quadriflow（目标面数、保留硬边/边界）+ 生成按钮 |
+| ③ 完成转换 | 大号一键按钮、是否删除①③源模型 |
+| 高级选项 | 手动指定②、分步「只传 UV」「只套回衣服形状」、清空 |
 
 ## 原理
-- UV 传递：世界空间最近点采样，把 01 的全部 UV 层传给 02（等价 Maya `transferUVs=2`）。
-- 位置传递：按 02 的 UV 在 03 的 UV 空间采样，把 02 套到衣服形状（等价 Maya `transferPositions=2, sampleSpace=3`）。
+- **四边面生成**：默认按四边面质量（四个内角与 90° 的偏离）贪心配对三角面并合并；
+  可选 Quadriflow 按目标面数重分布。
+- **UV 传递**：世界空间最近点采样，把①的全部 UV 层传给②（等价 Maya `transferUVs=2`）。
+- **位置传递**：按②的 UV 在③的 UV 空间采样，把②套到衣服形状（等价 Maya `transferPositions=2, sampleSpace=3`）。
+
+## 已验证环境
+Blender **3.6.20** 与 **4.2.9 LTS**（Windows，无头模式）下均通过 20 项自动化测试：
+加载注册、空状态拦截、自动识别、一键转换、四边面占比、形状误差、UV 缺失报错、
+Quadriflow 模式、面板绘制（4 种状态 + 空状态）、旧 idname 兼容。
+
+## 开发
+```bash
+# 无头 Blender 冒烟测试（需自备 Blender 可执行文件）
+blender --background --factory-startup --python tools/test_addon.py -- md_to_quads
+```
 
 ## 许可证
 GPL-3.0-or-later（与原 Maya 脚本同源衍生）。
