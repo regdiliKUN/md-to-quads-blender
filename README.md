@@ -12,7 +12,22 @@
 - 🧭 **看得懂的界面**：三步式面板 ① 准备 → ② 生成四边面 → ③ 完成转换，带常驻状态条、空状态引导、面数/UV 自检、进度条与结果统计。
 - ↩️ **可撤销**：所有操作都支持 Ctrl+Z；删除源模型前会显式压入撤销点。
 
-## 安装
+## 安装（两种方式，选一个）
+
+### 方式 A · 一键启动（推荐，Windows / macOS / Linux）
+下载 Release 里的 **`md_to_quads-1.3.0-完整包.zip`**，解压后：
+
+| 双击这个 | 会发生什么 |
+| --- | --- |
+| **`一键启动.bat`** | 自动找 Blender → 装/更新插件 → 启用 → 打开 Blender。**什么都不用选** |
+| **`一键助手.bat`** | 菜单版：① 安装并启动 ② 创建桌面快捷方式 ③ 两者一起 ④ 只启动 ⑤ 只装插件 ⑥ 忘记记住的 Blender 路径 |
+| **`创建桌面快捷方式.bat`** | 只在桌面放两个图标：「一键助手」和「文件目录」 |
+| `一键助手.sh` | macOS / Linux 版（双击或 `./一键助手.sh`） |
+
+快捷方式建好后，**以后双击桌面图标 = 装好 + 打开 Blender**，不用再解压一遍。
+脚本需要 Python 3；系统没有的话会自动改用 Blender 自带的 Python，都不行会提示手动安装路径。
+
+### 方式 B · 手动安装（和别的插件一样）
 1. 下载 Release 里的 `md_to_quads-1.3.0.zip`（内含 `md_to_quads/__init__.py` 与 `使用说明.txt`）。
 2. Blender → 编辑 → 偏好设置 → 插件 → **从磁盘安装 / Install from Disk** → 选 zip（或解压后选 `__init__.py`）→ 勾选启用。
 3. 3D 视图按 `N` → 侧栏标签 **「MD转四边面」**。
@@ -49,6 +64,12 @@ Quadriflow 模式、面板绘制（4 种状态 + 空状态）、旧 idname 兼�
 ```bash
 # 无头 Blender 冒烟测试（需自备 Blender 可执行文件）
 blender --background --factory-startup --python tools/test_addon.py -- md_to_quads
+
+# 打包两个发布物：纯净插件包 + 含一键启动器的完整包
+python tools/make_release.py
+
+# 单独试跑一键助手（不弹出窗口、不暂停）
+python tools/md_launcher.py --install-only --no-pause
 ```
 
 ## 许可证
