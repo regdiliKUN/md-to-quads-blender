@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+
+# 一键助手记住的 Blender 路径（每台机器不同，不入库）
+.blender_path
